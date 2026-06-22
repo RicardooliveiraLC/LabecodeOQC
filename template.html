@@ -93,14 +93,38 @@ h1{font-size:21px;margin:0;font-weight:700}
 @media(max-width:980px){.nc-grid{grid-template-columns:1fr}}
 /* month bars (single blue) */
 .seg.mo{background:linear-gradient(180deg,var(--blue),var(--indigo))}
-/* hbars */
-.hbars{display:flex;flex-direction:column;gap:11px;margin-top:4px}
-.hrow{display:grid;grid-template-columns:170px 1fr 42px;align-items:center;gap:10px}
-.hrow .hl{font-size:12px;color:var(--ink);text-align:right;line-height:1.2}
-.htrack{background:#f0f3f9;border-radius:6px;height:18px;overflow:hidden}
+/* failure charts: indicator + enhanced bars */
+.ind{display:flex;align-items:center;gap:18px;background:#fafbff;border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin:4px 0 14px}
+.donut{position:relative;width:92px;height:92px;flex:none}
+.donut svg{transform:rotate(-90deg)}
+.donut .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut .ctr b{font-size:19px;font-weight:800;color:var(--red)}
+.donut .ctr span{font-size:9px;color:var(--muted);text-align:center;line-height:1.1;margin-top:2px;max-width:66px}
+.ind-stats{display:flex;flex-direction:column;gap:9px;flex:1}
+.ind-cap{font-size:12px;color:var(--ink);font-weight:600}
+.ind-cap small{display:block;color:var(--muted);font-weight:400;font-size:11px;margin-top:1px}
+.mini{display:flex;gap:18px}
+.mini div .n{font-size:18px;font-weight:800;line-height:1}
+.mini div .l{font-size:10.5px;color:var(--muted)}
+.mini .n.blue{color:var(--blue)} .mini .n.red{color:var(--red)}
+.lead{font-size:11px;color:var(--muted);margin:0 0 8px;display:flex;gap:14px}
+.lead span{display:flex;align-items:center;gap:5px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.sw.nc{background:var(--red)} .sw.op{background:var(--indigo)}
+.hbars{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.hrow{display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:12px}
+.hl{font-size:12px;color:var(--ink);text-align:right;line-height:1.2}
+.hmid{display:flex;flex-direction:column;gap:4px}
+.htrack{background:#f0f3f9;border-radius:6px;height:16px;overflow:hidden}
 .hfill{height:100%;border-radius:6px;background:linear-gradient(90deg,#ff8a5b,var(--red))}
 .hfill.soft{background:linear-gradient(90deg,#7d8df0,var(--indigo))}
-.hrow .hv{font-size:12px;font-weight:700;text-align:left}
+.hsub{font-size:10px;color:var(--muted)}
+.hsub i{font-style:normal;color:var(--indigo);font-weight:700}
+.hright{display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.qty{font-size:15px;font-weight:800}
+.chip{font-size:10px;font-weight:700;padding:3px 7px;border-radius:20px;white-space:nowrap}
+.chip.nc{background:var(--red-soft);color:var(--red)}
+.chip.op{background:var(--blue-soft);color:var(--blue)}
 .empty{color:var(--muted);font-size:12.5px;padding:20px 0;text-align:center}
 /* legend */
 .legend{display:flex;gap:16px;margin-top:14px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
@@ -186,11 +210,15 @@ footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:28px}
   <!-- CHARTS ROW 2 -->
   <div class="grid">
     <div class="card">
-      <div class="ttl-row"><div><h3>Principais falhas — últimos 7 dias</h3><p class="hint">Critérios não conformes recentes</p></div></div>
+      <div class="ttl-row"><div><h3>Principais falhas — últimos 7 dias</h3><p class="hint">Critérios não conformes recentes</p></div><span class="pill">7 dias</span></div>
+      <div class="ind" id="fail7Ind"></div>
+      <p class="lead"><span><i class="sw nc"></i>% das NCs</span><span><i class="sw op"></i>% das OPs inspecionadas</span></p>
       <div class="hbars" id="chartFail7"></div>
     </div>
     <div class="card">
       <div class="ttl-row"><div><h3>Principais falhas — geral</h3><p class="hint">Onde a qualidade mais escapa no período filtrado</p></div></div>
+      <div class="ind" id="failAllInd"></div>
+      <p class="lead"><span><i class="sw nc"></i>% das NCs</span><span><i class="sw op"></i>% das OPs inspecionadas</span></p>
       <div class="hbars" id="chartFailAll"></div>
     </div>
   </div>
@@ -419,24 +447,55 @@ function failCounts(rows){
   return Object.entries(c).sort((a,b)=>b[1]-a[1]);
 }
 
-function renderHBars(elId,counts,soft){
-  const el=document.getElementById(elId);
+function pct1(n){return n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});}
+function donutSVG(p){
+  const R=42, C=2*Math.PI*R, off=C*(1-p/100);
+  return `<div class="donut"><svg width="92" height="92" viewBox="0 0 96 96">
+    <circle cx="48" cy="48" r="${R}" fill="none" stroke="#f0f3f9" stroke-width="11"/>
+    <circle cx="48" cy="48" r="${R}" fill="none" stroke="var(--red)" stroke-width="11" stroke-linecap="round"
+      stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/></svg>
+    <div class="ctr"><b>${pct1(p)}%</b><span>OPs com NC</span></div></div>`;
+}
+function renderFailCard(indId,barsId,rows,soft){
+  const counts=failCounts(rows);
+  const ops=rows.length;
+  const comNC=rows.filter(r=>r.fails.length>0).length;
+  const ncs=counts.reduce((a,b)=>a+b[1],0);
+  const pOpsNC=ops?comNC/ops*100:0;
+  document.getElementById(indId).innerHTML=
+    donutSVG(pOpsNC)+
+    `<div class="ind-stats">
+       <div class="ind-cap">% de OPs inspecionadas com alguma não conformidade
+         <small>${fmtN(comNC)} de ${fmtN(ops)} OPs apresentaram ao menos 1 NC</small></div>
+       <div class="mini">
+         <div><div class="n blue">${fmtN(ops)}</div><div class="l">OPs inspecionadas</div></div>
+         <div><div class="n red">${fmtN(ncs)}</div><div class="l">NCs registradas</div></div>
+       </div></div>`;
+  const el=document.getElementById(barsId);
   if(!counts.length){el.innerHTML='<div class="empty">Nenhuma falha registrada no recorte. 🎉</div>';return;}
   const top=counts.slice(0,7);
   const max=top[0][1];
-  el.innerHTML=top.map(([name,n])=>`
-    <div class="hrow">
+  el.innerHTML=top.map(([name,n])=>{
+    const pNC=ncs?n/ncs*100:0, pOP=ops?n/ops*100:0;
+    return `<div class="hrow">
       <div class="hl">${name}</div>
-      <div class="htrack"><div class="hfill ${soft?'soft':''}" style="width:${Math.max(4,n/max*100)}%"></div></div>
-      <div class="hv">${fmtN(n)}</div>
-    </div>`).join('');
+      <div class="hmid">
+        <div class="htrack"><div class="hfill ${soft?'soft':''}" style="width:${Math.max(4,n/max*100)}%"></div></div>
+        <div class="hsub">incidência: <i>${pct1(pOP)}%</i> das OPs inspecionadas</div>
+      </div>
+      <div class="hright">
+        <span class="qty">${fmtN(n)}</span>
+        <span class="chip nc">${pct1(pNC)}% das NCs</span>
+        <span class="chip op">${pct1(pOP)}% das OPs</span>
+      </div></div>`;
+  }).join('');
 }
 
 function renderFails(){
   const days=lastNDays(7);
   const rows7=current.filter(r=>days.includes(r.date));
-  renderHBars('chartFail7',failCounts(rows7),false);
-  renderHBars('chartFailAll',failCounts(current),true);
+  renderFailCard('fail7Ind','chartFail7',rows7,false);
+  renderFailCard('failAllInd','chartFailAll',current,true);
 }
 
 function renderTable(){

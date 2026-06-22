@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amostra · Principais falhas (qtd + % NCs + % OPs)</title>
+<style>
+:root{
+  --bg:#f4f6fb; --panel:#ffffff; --ink:#1a2236; --muted:#6b7592; --line:#e7ebf3;
+  --blue:#2f6bff; --blue-soft:#eaf0ff; --indigo:#5b6bd6;
+  --green:#16a06b; --amber:#e0962a; --red:#e0483b; --red-soft:#fdeceb;
+  --shadow:0 1px 3px rgba(20,32,64,.06),0 8px 24px rgba(20,32,64,.05);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
+.wrap{max-width:1320px;margin:0 auto;padding:28px}
+.note{background:#fff7e6;border:1px solid #f3dca0;color:#7a5a12;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:12.5px}
+.note b{color:#5a4209}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 2px;font-size:15px}
+.card .hint{color:var(--muted);font-size:12px;margin:0 0 14px}
+.ttl-row{display:flex;justify-content:space-between;align-items:baseline}
+.pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--blue-soft);color:var(--blue)}
+
+/* indicator strip: donut + stats */
+.ind{display:flex;align-items:center;gap:18px;background:#fafbff;border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-bottom:16px}
+.donut{position:relative;width:96px;height:96px;flex:none}
+.donut svg{transform:rotate(-90deg)}
+.donut .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut .ctr b{font-size:20px;font-weight:800;color:var(--red)}
+.donut .ctr span{font-size:9px;color:var(--muted);text-align:center;line-height:1.1;margin-top:2px;max-width:70px}
+.ind-stats{display:flex;flex-direction:column;gap:9px;flex:1}
+.ind-cap{font-size:12px;color:var(--ink);font-weight:600}
+.ind-cap small{display:block;color:var(--muted);font-weight:400;font-size:11px;margin-top:1px}
+.mini{display:flex;gap:18px}
+.mini div .n{font-size:18px;font-weight:800;line-height:1}
+.mini div .l{font-size:10.5px;color:var(--muted)}
+.mini .n.blue{color:var(--blue)} .mini .n.red{color:var(--red)}
+
+/* enhanced bar rows */
+.hbars{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.hrow{display:grid;grid-template-columns:158px 1fr auto;align-items:center;gap:12px}
+.hl{font-size:12px;text-align:right;line-height:1.2}
+.hmid{display:flex;flex-direction:column;gap:4px}
+.htrack{background:#f0f3f9;border-radius:6px;height:16px;overflow:hidden}
+.hfill{height:100%;border-radius:6px;background:linear-gradient(90deg,#ff8a5b,var(--red))}
+.hfill.soft{background:linear-gradient(90deg,#7d8df0,var(--indigo))}
+.hsub{font-size:10px;color:var(--muted)}
+.hsub i{font-style:normal;color:var(--indigo);font-weight:700}
+.hright{display:flex;align-items:center;gap:7px;justify-content:flex-end;min-width:150px}
+.qty{font-size:15px;font-weight:800}
+.chip{font-size:10px;font-weight:700;padding:3px 7px;border-radius:20px;white-space:nowrap}
+.chip.nc{background:var(--red-soft);color:var(--red)}
+.chip.op{background:var(--blue-soft);color:var(--blue)}
+.lead{font-size:11px;color:var(--muted);margin:0 0 8px;display:flex;gap:14px}
+.lead span{display:flex;align-items:center;gap:5px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.sw.nc{background:var(--red)} .sw.op{background:var(--indigo)}
+@media(max-width:980px){.grid{grid-template-columns:1fr}.hrow{grid-template-columns:120px 1fr auto}}
+h1{font-size:19px;margin:0 0 4px}
+.subt{color:var(--muted);font-size:13px;margin:0 0 18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Amostra — Principais falhas com % das NCs e % das OPs</h1>
+  <p class="subt">Pré-visualização da nova versão dos dois gráficos. Nada do dashboard publicado foi alterado.</p>
+
+  <div class="note">
+    <b>O que muda:</b> cada falha agora mostra a <b>quantidade</b>, o <b>% sobre o total de NCs</b> (peso da falha entre as não conformidades)
+    e o <b>% sobre o total de OPs inspecionadas</b> (taxa de incidência). No topo de cada card, um <b>indicador donut</b> com o
+    <b>% de OPs inspecionadas que tiveram alguma NC</b>. Números reais da planilha (até 22/06/2026).
+  </div>
+
+  <div class="grid">
+    <!-- CARD 1: ultimos 7 dias -->
+    <div class="card">
+      <div class="ttl-row"><div><h3>Principais falhas — últimos 7 dias</h3><p class="hint">Critérios não conformes recentes</p></div><span class="pill">7 dias</span></div>
+      <div class="ind" id="ind7"></div>
+      <p class="lead"><span><i class="sw nc"></i>% das NCs</span><span><i class="sw op"></i>% das OPs inspecionadas</span></p>
+      <div class="hbars" id="bars7"></div>
+    </div>
+
+    <!-- CARD 2: geral -->
+    <div class="card">
+      <div class="ttl-row"><div><h3>Principais falhas — geral</h3><p class="hint">Onde a qualidade mais escapa no período</p></div></div>
+      <div class="ind" id="indG"></div>
+      <p class="lead"><span><i class="sw nc"></i>% das NCs</span><span><i class="sw op"></i>% das OPs inspecionadas</span></p>
+      <div class="hbars" id="barsG"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const fmt=n=>n.toLocaleString('pt-BR');
+const pct=n=>n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+
+// dados reais calculados da planilha
+const D7={ops:188, comNC:93, ncs:111, rows:[
+  ['Preenchimento do checklist',81],
+  ['Testes de liner/impressão',14],
+  ['Etiquetas de identificação',7],
+  ['Tape test (desplacamento de tinta)',4],
+  ['Produto final conforme amostra',2],
+  ['Leitura QR / código de barras',1],
+  ['Impressão conforme arte',1],
+]};
+const DG={ops:2269, comNC:777, ncs:903, rows:[
+  ['Preenchimento do checklist',645],
+  ['Testes de liner/impressão',89],
+  ['Tape test (desplacamento de tinta)',48],
+  ['Etiquetas de identificação',45],
+  ['Matéria-prima / certificações',23],
+  ['Produto final conforme amostra',20],
+  ['Dimensional do produto',11],
+]};
+
+function donut(p,caption,sub){
+  const R=42, C=2*Math.PI*R, off=C*(1-p/100);
+  return `<div class="donut">
+    <svg width="96" height="96" viewBox="0 0 96 96">
+      <circle cx="48" cy="48" r="${R}" fill="none" stroke="#f0f3f9" stroke-width="11"/>
+      <circle cx="48" cy="48" r="${R}" fill="none" stroke="var(--red)" stroke-width="11"
+        stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/>
+    </svg>
+    <div class="ctr"><b>${pct(p)}%</b><span>${caption}</span></div>
+  </div>`;
+}
+
+function renderCard(indId,barsId,D,soft){
+  const pOps=D.comNC/D.ops*100;
+  document.getElementById(indId).innerHTML=
+    donut(pOps,'OPs com NC')+
+    `<div class="ind-stats">
+       <div class="ind-cap">% de OPs inspecionadas com alguma não conformidade
+         <small>${fmt(D.comNC)} de ${fmt(D.ops)} OPs apresentaram ao menos 1 NC</small></div>
+       <div class="mini">
+         <div><div class="n blue">${fmt(D.ops)}</div><div class="l">OPs inspecionadas</div></div>
+         <div><div class="n red">${fmt(D.ncs)}</div><div class="l">NCs registradas</div></div>
+       </div>
+     </div>`;
+  const max=D.rows[0][1];
+  document.getElementById(barsId).innerHTML=D.rows.map(([name,n])=>{
+    const pNC=n/D.ncs*100, pOP=n/D.ops*100;
+    return `<div class="hrow">
+      <div class="hl">${name}</div>
+      <div class="hmid">
+        <div class="htrack"><div class="hfill ${soft?'soft':''}" style="width:${Math.max(4,n/max*100)}%"></div></div>
+        <div class="hsub">incidência: <i>${pct(pOP)}%</i> das OPs inspecionadas</div>
+      </div>
+      <div class="hright">
+        <span class="qty">${fmt(n)}</span>
+        <span class="chip nc">${pct(pNC)}% das NCs</span>
+        <span class="chip op">${pct(pOP)}% das OPs</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderCard('ind7','bars7',D7,false);
+renderCard('indG','barsG',DG,true);
+</script>
+</body>
+</html>
