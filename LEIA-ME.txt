@@ -1,43 +1,62 @@
 ============================================================
- DASHBOARD OQC - LABEL CODE  |  Automacao
+ DASHBOARD OQC - LABEL CODE  |  Automacao + Publicacao Web
 ============================================================
+
+>>> DASHBOARD ONLINE (acesso via internet):
+    https://ricardooliveiralc.github.io/LabecodeOQC/
 
 ARQUIVOS DESTA PASTA
 --------------------
-- dashboard.html ............ O painel pronto. Abra com duplo-clique
-                              (abre no navegador, funciona offline).
-- gerar_dashboard.py ........ Gerador: le a planilha e refaz o dashboard.
+- index.html ................ Versao publicada no GitHub Pages (web).
+- dashboard.html ............ Mesma pagina, para abrir local (duplo-clique).
+- gerar_dashboard.py ........ Gerador: le a planilha, refaz o dashboard
+                              e PUBLICA no GitHub automaticamente.
 - template.html ............. Modelo visual usado pelo gerador.
-                              (NAO apagar - sem ele o gerador nao funciona)
-- Atualizar Dashboard OQC.bat  Atualiza o painel na hora e o abre
-                              (duplo-clique quando quiser atualizar).
-- *.lnk (atalho) ............ Aponta para a planilha de origem. O gerador
-                              usa este atalho para achar a planilha, entao
-                              se a planilha mudar de lugar, basta refazer
-                              o atalho aqui.
+                              (NAO apagar)
+- Atualizar Dashboard OQC.bat  Atualiza + publica na hora e abre o painel.
+- .gitignore ................ Define o que NAO sobe ao GitHub (inclui o token).
+- *.lnk (atalho) ............ Aponta para a planilha de origem. Se a planilha
+                              mudar de lugar, basta refazer o atalho aqui.
 
 COMO ATUALIZAR MANUALMENTE
 --------------------------
 Duplo-clique em "Atualizar Dashboard OQC.bat".
+(Le a planilha, refaz o painel e envia para o GitHub/site.)
 
 ATUALIZACAO AUTOMATICA (ja configurada)
 ---------------------------------------
-Existe uma Tarefa Agendada do Windows chamada:
-   "OQC - Atualizar Dashboard"
-Ela roda TODO DIA as 07:00 e regenera o dashboard.html em segundo
-plano (sem abrir janela). Requer o usuario logado no Windows.
+Tarefa Agendada do Windows: "OQC - Atualizar Dashboard"
+Roda DUAS VEZES por dia: 08:15 e 13:15.
+A cada execucao ela:
+  1) le a planilha (via atalho .lnk);
+  2) regenera dashboard.html / index.html;
+  3) faz commit e push para o GitHub -> o site online se atualiza
+     sozinho em ~1 minuto.
+Requer o usuario logado no Windows.
 
-Para mudar o horario / ver / desativar:
-  1. Abra o "Agendador de Tarefas" (Task Scheduler) do Windows.
-  2. Biblioteca do Agendador de Tarefas -> procure
-     "OQC - Atualizar Dashboard".
-  3. Botao direito -> Propriedades (aba "Disparadores" muda o horario)
-     ou Desabilitar / Excluir.
+Para mudar horarios / desativar:
+  Agendador de Tarefas do Windows -> "OQC - Atualizar Dashboard"
+  -> Propriedades (aba Disparadores) ou Desabilitar/Excluir.
+
+PUBLICACAO NO GITHUB
+--------------------
+- Repositorio: https://github.com/RicardooliveiraLC/LabecodeOQC
+- Site (Pages): branch "main", pasta raiz, arquivo index.html.
+- O TOKEN de acesso NAO fica no repositorio. Ele e lido de:
+      C:\Users\ricardo.oliveira\.oqc\github_token.txt   (local, fora do OneDrive)
+  Para trocar o token, basta substituir o conteudo desse arquivo.
+
+SEGURANCA - IMPORTANTE
+----------------------
+O token usado foi exposto em texto durante a configuracao. Recomenda-se
+GERAR UM NOVO token (fine-grained, somente este repositorio, permissao
+"Contents: Read and write") e atualizar o arquivo acima. Revogue o antigo
+em: GitHub -> Settings -> Developer settings -> Personal access tokens.
 
 REQUISITOS
 ----------
-- Python instalado (com a biblioteca openpyxl).
-  Se faltar:  pip install openpyxl
-- O atalho .lnk valido apontando para a planilha .xlsx.
+- Python instalado + biblioteca openpyxl  (pip install openpyxl)
+- Git instalado  (ja detectado no PATH)
+- Atalho .lnk valido apontando para a planilha .xlsx.
 
 ============================================================
