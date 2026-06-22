@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OQC · Inspeção Final da Qualidade — Label Code</title>
+<style>
+:root{
+  --bg:#f4f6fb; --panel:#ffffff; --ink:#1a2236; --muted:#6b7592; --line:#e7ebf3;
+  --blue:#2f6bff; --blue-soft:#eaf0ff; --indigo:#5b6bd6;
+  --green:#16a06b; --green-soft:#e6f7f0;
+  --amber:#e0962a; --amber-soft:#fdf3e2;
+  --red:#e0483b; --red-soft:#fdeceb;
+  --shadow:0 1px 3px rgba(20,32,64,.06),0 8px 24px rgba(20,32,64,.05);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
+.wrap{max-width:1320px;margin:0 auto;padding:24px 28px 60px}
+/* header */
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:6px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--indigo));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;letter-spacing:.5px}
+h1{font-size:21px;margin:0;font-weight:700}
+.sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+.period{text-align:right;font-size:12px;color:var(--muted)}
+.period b{display:block;color:var(--ink);font-size:14px;font-weight:600}
+/* story banner */
+.story{background:linear-gradient(120deg,#10204a,#1f3b8a);color:#fff;border-radius:var(--radius);padding:18px 22px;margin:18px 0;box-shadow:var(--shadow);display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.story .ico{font-size:26px}
+.story p{margin:0;font-size:13.5px;opacity:.92;max-width:none}
+.story b{color:#ffd66e}
+/* filters */
+.filters{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);margin-bottom:18px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.fld input,.fld select{border:1px solid var(--line);background:#fbfcfe;border-radius:9px;padding:8px 10px;font-size:13px;color:var(--ink);min-width:140px;outline:none}
+.fld input:focus,.fld select:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft)}
+.btn{border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff}
+.btn.ghost{background:#fff;color:var(--muted);border:1px solid var(--line)}
+.btn:hover{filter:brightness(.97)}
+/* kpi */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi .lab{font-size:12px;color:var(--muted);font-weight:600}
+.kpi .val{font-size:32px;font-weight:800;margin:6px 0 2px;letter-spacing:-.5px}
+.kpi .foot{font-size:11.5px;color:var(--muted)}
+.kpi .tag{position:absolute;top:16px;right:16px;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.kpi.k-blue .tag{background:var(--blue-soft)}.kpi.k-blue .val{color:var(--blue)}
+.kpi.k-green .tag{background:var(--green-soft)}.kpi.k-green .val{color:var(--green)}
+.kpi.k-amber .tag{background:var(--amber-soft)}.kpi.k-amber .val{color:var(--amber)}
+.kpi.k-red .tag{background:var(--red-soft)}.kpi.k-red .val{color:var(--red)}
+/* grid panels */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 2px;font-size:15px}
+.card .hint{color:var(--muted);font-size:12px;margin:0 0 14px}
+.card .ttl-row{display:flex;justify-content:space-between;align-items:baseline}
+.pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:var(--blue-soft);color:var(--blue)}
+/* bar chart */
+.bars{display:flex;align-items:flex-end;gap:8px;height:190px;padding-top:10px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar-stack{width:100%;max-width:46px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 0 0;overflow:hidden;position:relative}
+.seg{width:100%}
+.seg.ap{background:var(--green)}.seg.cd{background:var(--amber)}.seg.rp{background:var(--red)}
+.bar-col .num{font-size:12px;font-weight:700}
+.bar-col .lbl{font-size:10.5px;color:var(--muted);text-align:center;white-space:nowrap}
+.bar-col:hover .bar-stack{filter:brightness(1.07)}
+/* column chart with axis */
+.chart-xy{display:flex;gap:10px;height:210px}
+.yaxis{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;font-size:10px;color:var(--muted);padding:4px 0 22px;min-width:24px}
+.plot{flex:1;position:relative}
+.gridlines{position:absolute;inset:4px 0 22px 0;display:flex;flex-direction:column;justify-content:space-between;z-index:0}
+.gridlines div{border-top:1px dashed var(--line);height:0}
+.cols{position:relative;z-index:1;display:flex;align-items:flex-end;gap:8px;height:100%;padding-bottom:22px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative}
+.col .cnum{font-size:11px;font-weight:700;margin-bottom:3px}
+.col .cstack{width:100%;max-width:44px;display:flex;flex-direction:column-reverse;border-radius:6px 6px 0 0;overflow:hidden}
+.col .clbl{position:absolute;bottom:-20px;font-size:10px;color:var(--muted);white-space:nowrap}
+.col:hover .cstack{filter:brightness(1.07)}
+/* line chart */
+.linewrap{position:relative}
+.linewrap svg{width:100%;display:block}
+/* auto filter tag */
+.auto-tag{font-size:11px;font-weight:600;color:var(--green);background:var(--green-soft);padding:7px 12px;border-radius:9px;align-self:flex-end}
+/* NC glossary */
+.nc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+.nc-item{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#fbfcfe}
+.nc-item h4{margin:0 0 4px;font-size:13px;display:flex;align-items:center;gap:8px}
+.nc-item h4 .nb{font-size:10.5px;font-weight:700;color:#fff;background:var(--blue);padding:2px 7px;border-radius:20px}
+.nc-item p{margin:0;font-size:12px;color:var(--muted);line-height:1.5}
+.nc-item .cnt{font-size:10.5px;color:var(--red);font-weight:700;margin-top:5px}
+@media(max-width:980px){.nc-grid{grid-template-columns:1fr}}
+/* month bars (single blue) */
+.seg.mo{background:linear-gradient(180deg,var(--blue),var(--indigo))}
+/* hbars */
+.hbars{display:flex;flex-direction:column;gap:11px;margin-top:4px}
+.hrow{display:grid;grid-template-columns:170px 1fr 42px;align-items:center;gap:10px}
+.hrow .hl{font-size:12px;color:var(--ink);text-align:right;line-height:1.2}
+.htrack{background:#f0f3f9;border-radius:6px;height:18px;overflow:hidden}
+.hfill{height:100%;border-radius:6px;background:linear-gradient(90deg,#ff8a5b,var(--red))}
+.hfill.soft{background:linear-gradient(90deg,#7d8df0,var(--indigo))}
+.hrow .hv{font-size:12px;font-weight:700;text-align:left}
+.empty{color:var(--muted);font-size:12.5px;padding:20px 0;text-align:center}
+/* legend */
+.legend{display:flex;gap:16px;margin-top:14px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.dot.ap{background:var(--green)}.dot.cd{background:var(--amber)}.dot.rp{background:var(--red)}
+/* table */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:9px 10px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:hover td{background:#fafbfe}
+.badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;display:inline-block}
+.badge.APROVADO{background:var(--green-soft);color:var(--green)}
+.badge.CONDICIONAL{background:var(--amber-soft);color:var(--amber)}
+.badge.REPROVADO{background:var(--red-soft);color:var(--red)}
+.badge\.NI{background:#eef0f5;color:var(--muted)}
+.fail-chip{font-size:10.5px;background:var(--red-soft);color:var(--red);padding:2px 7px;border-radius:12px;margin:1px 2px 1px 0;display:inline-block}
+.tooltip{position:fixed;background:#10204a;color:#fff;padding:7px 10px;border-radius:8px;font-size:11.5px;pointer-events:none;opacity:0;transition:opacity .12s;z-index:50;box-shadow:var(--shadow);white-space:nowrap}
+footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:28px}
+@media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.hrow{grid-template-columns:120px 1fr 36px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">OQC</div>
+      <div>
+        <h1>Inspeção Final da Qualidade · OQC</h1>
+        <div class="sub">Label Code · Painel de análise e apoio à decisão</div>
+      </div>
+    </div>
+    <div class="period">
+      Período dos dados
+      <b id="periodLabel">—</b>
+      <span id="updLabel"></span>
+      <span style="display:block;margin-top:5px;color:var(--green);font-weight:600;font-size:11.5px">🔄 Atualizado em __GENERATED_AT__</span>
+    </div>
+  </header>
+
+  <div class="story">
+    <div class="ico">💡</div>
+    <p id="storyText">Carregando insights...</p>
+  </div>
+
+  <!-- FILTROS -->
+  <div class="filters">
+    <div class="fld"><label>Data inicial</label><input type="date" id="fDe"></div>
+    <div class="fld"><label>Data final</label><input type="date" id="fAte"></div>
+    <div class="fld"><label>Mês</label><select id="fMes"></select></div>
+    <div class="fld"><label>Nº da ordem</label><input type="text" id="fOrdem" placeholder="ex: P020475"></div>
+    <div class="fld"><label>Status final</label><select id="fStatus">
+      <option value="">Todos</option>
+      <option value="APROVADO">Aprovado</option>
+      <option value="CONDICIONAL">Condicional</option>
+      <option value="REPROVADO">Reprovado</option>
+    </select></div>
+    <button class="btn ghost" onclick="resetFilters()">Limpar filtros</button>
+    <span class="auto-tag">⚡ Filtros aplicados automaticamente</span>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- CHARTS ROW 1 -->
+  <div class="grid">
+    <div class="card">
+      <div class="ttl-row"><div><h3>Inspeções por dia</h3><p class="hint">Quantidade de inspeções — últimos 7 dias</p></div><span class="pill" id="pill7d">7 dias</span></div>
+      <div id="chartDay"></div>
+      <div class="legend">
+        <span><i class="dot ap"></i>Aprovado</span>
+        <span><i class="dot cd"></i>Condicional</span>
+        <span><i class="dot rp"></i>Reprovado</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ttl-row"><div><h3>Inspeções por mês</h3><p class="hint">Tendência do volume — sempre os últimos 6 meses</p></div><span class="pill">6 meses</span></div>
+      <div class="linewrap" id="chartMonth"></div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 2 -->
+  <div class="grid">
+    <div class="card">
+      <div class="ttl-row"><div><h3>Principais falhas — últimos 7 dias</h3><p class="hint">Critérios não conformes recentes</p></div></div>
+      <div class="hbars" id="chartFail7"></div>
+    </div>
+    <div class="card">
+      <div class="ttl-row"><div><h3>Principais falhas — geral</h3><p class="hint">Onde a qualidade mais escapa no período filtrado</p></div></div>
+      <div class="hbars" id="chartFailAll"></div>
+    </div>
+  </div>
+
+  <!-- TABELA -->
+  <div class="card">
+    <div class="ttl-row"><div><h3>Últimas 30 inspeções</h3><p class="hint">Registros mais recentes do período filtrado</p></div><span class="pill" id="pillCount">—</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Data/Hora</th><th>Nº Ordem</th><th>Código</th><th>Responsável</th><th>Status</th><th>Falhas detectadas</th>
+        </tr></thead>
+        <tbody id="tblBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- GLOSSÁRIO DE NÃO CONFORMIDADES -->
+  <div class="card" style="margin-top:16px">
+    <div class="ttl-row"><div><h3>Entenda cada não conformidade (NC)</h3><p class="hint">O que cada critério de inspeção verifica · nº de ocorrências em todo o histórico</p></div></div>
+    <div class="nc-grid" id="ncGrid"></div>
+  </div>
+
+  <footer>Painel OQC · Label Code — gerado a partir de “INSPEÇÃO FINAL QUALIDADE - OQC LABEL CODE.xlsx”. Tema claro · storytelling de dados.</footer>
+</div>
+<div class="tooltip" id="tip"></div>
+
+<script>
+/* __DATA__ */
+const RAW = __DATA_JSON__;
+
+const MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const fmtN=n=>n.toLocaleString('pt-BR');
+const tip=document.getElementById('tip');
+function showTip(e,html){tip.innerHTML=html;tip.style.opacity=1;moveTip(e);}
+function moveTip(e){tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY+14)+'px';}
+function hideTip(){tip.style.opacity=0;}
+
+// ---- init dates / month select ----
+const allDates=RAW.map(r=>r.date).sort();
+const minDate=allDates[0], maxDate=allDates[allDates.length-1];
+document.getElementById('periodLabel').textContent=br(minDate)+' — '+br(maxDate);
+document.getElementById('updLabel').textContent=fmtN(RAW.length)+' inspeções registradas';
+function br(d){const[y,m,day]=d.split('-');return day+'/'+m+'/'+y;}
+
+const fMes=document.getElementById('fMes');
+fMes.innerHTML='<option value="">Todos os meses</option>';
+[...new Set(RAW.map(r=>r.date.slice(0,7)))].sort().forEach(ym=>{
+  const[y,m]=ym.split('-');
+  fMes.innerHTML+=`<option value="${ym}">${MESES[+m-1]}/${y}</option>`;
+});
+document.getElementById('fDe').value=minDate;
+document.getElementById('fAte').value=maxDate;
+
+let current=RAW;
+
+function applyFilters(){
+  const de=document.getElementById('fDe').value;
+  const ate=document.getElementById('fAte').value;
+  const mes=document.getElementById('fMes').value;
+  const ordem=document.getElementById('fOrdem').value.trim().toUpperCase();
+  const st=document.getElementById('fStatus').value;
+  current=RAW.filter(r=>{
+    if(de && r.date<de) return false;
+    if(ate && r.date>ate) return false;
+    if(mes && r.date.slice(0,7)!==mes) return false;
+    if(ordem && !r.order.toUpperCase().includes(ordem)) return false;
+    if(st && r.status!==st) return false;
+    return true;
+  });
+  render();
+}
+function resetFilters(){
+  document.getElementById('fDe').value=minDate;
+  document.getElementById('fAte').value=maxDate;
+  document.getElementById('fMes').value='';
+  document.getElementById('fOrdem').value='';
+  document.getElementById('fStatus').value='';
+  current=RAW;render();
+}
+// ---- DYNAMIC filters: no apply button needed ----
+fMes.addEventListener('change',()=>{
+  const ym=fMes.value;
+  if(ym){const[y,m]=ym.split('-');const last=new Date(y,m,0).getDate();
+    document.getElementById('fDe').value=`${ym}-01`;
+    document.getElementById('fAte').value=`${ym}-${String(last).padStart(2,'0')}`;}
+  applyFilters();
+});
+['fDe','fAte','fStatus'].forEach(id=>document.getElementById(id).addEventListener('change',applyFilters));
+document.getElementById('fOrdem').addEventListener('input',applyFilters);
+
+function render(){
+  renderKPI();renderStory();renderDay();renderMonth();renderFails();renderTable();
+}
+
+function renderKPI(){
+  const t=current.length;
+  const ap=current.filter(r=>r.status==='APROVADO').length;
+  const cd=current.filter(r=>r.status==='CONDICIONAL').length;
+  const rp=current.filter(r=>r.status==='REPROVADO').length;
+  const rate=t? (ap/t*100):0;
+  const kpis=[
+    {c:'k-blue',i:'🔍',l:'Total de inspeções',v:fmtN(t),f:'no período filtrado'},
+    {c:'k-green',i:'✅',l:'Taxa de aprovação',v:rate.toFixed(1)+'%',f:fmtN(ap)+' aprovadas'},
+    {c:'k-amber',i:'⚠️',l:'Condicionais',v:fmtN(cd),f:t?(cd/t*100).toFixed(1)+'% do total':'—'},
+    {c:'k-red',i:'⛔',l:'Reprovadas',v:fmtN(rp),f:t?(rp/t*100).toFixed(1)+'% do total':'—'},
+  ];
+  document.getElementById('kpis').innerHTML=kpis.map(k=>`
+    <div class="kpi ${k.c}"><div class="tag">${k.i}</div>
+      <div class="lab">${k.l}</div><div class="val">${k.v}</div><div class="foot">${k.f}</div></div>`).join('');
+}
+
+function renderStory(){
+  const t=current.length;
+  if(!t){document.getElementById('storyText').innerHTML='Nenhum registro para os filtros selecionados.';return;}
+  const ap=current.filter(r=>r.status==='APROVADO').length;
+  const rate=(ap/t*100).toFixed(1);
+  const fc=failCounts(current);
+  const top=fc[0];
+  const rp=current.filter(r=>r.status==='REPROVADO').length;
+  let txt=`No período analisado foram realizadas <b>${fmtN(t)}</b> inspeções finais, com taxa de aprovação de <b>${rate}%</b>. `;
+  if(top){
+    const share=((top[1]/fc.reduce((a,b)=>a+b[1],0))*100).toFixed(0);
+    txt+=`A principal origem de não conformidades é <b>${top[0]}</b> (${fmtN(top[1])} ocorrências, ~${share}% das falhas) — foco prioritário de ação. `;
+  }
+  txt+= rp? `Atenção: <b>${rp}</b> ordem(ns) reprovada(s) exigem tratativa.` : `Nenhuma reprovação no recorte — qualidade sob controle.`;
+  document.getElementById('storyText').innerHTML=txt;
+}
+
+function lastNDays(n){
+  // base = max date present in current (fallback global max)
+  const ref = (current.length?current:RAW).map(r=>r.date).sort().slice(-1)[0]||maxDate;
+  const base=new Date(ref+'T00:00:00');
+  const days=[];
+  for(let i=n-1;i>=0;i--){const d=new Date(base);d.setDate(base.getDate()-i);
+    days.push(d.toISOString().slice(0,10));}
+  return days;
+}
+
+function renderDay(){
+  const days=lastNDays(7);
+  const el=document.getElementById('chartDay');
+  const buckets=days.map(d=>{
+    const rows=current.filter(r=>r.date===d);
+    return {d,ap:rows.filter(r=>r.status==='APROVADO').length,
+      cd:rows.filter(r=>r.status==='CONDICIONAL').length,
+      rp:rows.filter(r=>r.status==='REPROVADO'||r.status==='NÃO INFORMADO').length,
+      tot:rows.length};
+  });
+  const maxV=Math.max(1,...buckets.map(b=>b.tot));
+  const niceMax=Math.max(5,Math.ceil(maxV/5)*5);
+  const PLOT=160;
+  const hpx=v=>(v/niceMax*PLOT)+'px';
+  let yt='';
+  for(let g=4;g>=0;g--) yt+=`<div>${Math.round(niceMax*g/4)}</div>`;
+  let gl='';for(let g=0;g<4;g++) gl+='<div></div>';
+  const cols=buckets.map(b=>{
+    const dd=b.d.slice(8)+'/'+b.d.slice(5,7);
+    return `<div class="col" onmousemove="moveTip(event)" onmouseleave="hideTip()"
+       onmouseenter="showTip(event,'<b>${br(b.d)}</b><br>Total: ${b.tot} inspeções<br>Aprov: ${b.ap} · Cond: ${b.cd} · Reprov: ${b.rp}')">
+      <div class="cnum">${b.tot||''}</div>
+      <div class="cstack" style="height:${hpx(b.tot)}">
+        <div class="seg ap" style="height:${b.tot?(b.ap/b.tot*100):0}%"></div>
+        <div class="seg cd" style="height:${b.tot?(b.cd/b.tot*100):0}%"></div>
+        <div class="seg rp" style="height:${b.tot?(b.rp/b.tot*100):0}%"></div>
+      </div>
+      <div class="clbl">${dd}</div></div>`;
+  }).join('');
+  el.innerHTML=`<div class="chart-xy">
+      <div class="yaxis">${yt}</div>
+      <div class="plot">
+        <div class="gridlines">${gl}</div>
+        <div class="cols">${cols}</div>
+      </div>
+    </div>`;
+}
+
+function last6Months(){
+  // always the last 6 calendar months ending at the global maxDate (independent of filters)
+  const [my,mm]=maxDate.slice(0,7).split('-').map(Number);
+  const arr=[];
+  for(let i=5;i>=0;i--){
+    let y=my, m=mm-i;
+    while(m<=0){m+=12;y-=1;}
+    arr.push(`${y}-${String(m).padStart(2,'0')}`);
+  }
+  return arr;
+}
+function renderMonth(){
+  const el=document.getElementById('chartMonth');
+  const months=last6Months();
+  const data=months.map(ym=>({ym,tot:RAW.filter(r=>r.date.slice(0,7)===ym).length}));
+  const W=520,H=210,padL=34,padR=14,padT=18,padB=30;
+  const maxV=Math.max(1,...data.map(d=>d.tot));
+  const niceMax=Math.ceil(maxV/50)*50||50;
+  const x=i=>padL+(W-padL-padR)*(data.length<2?0.5:i/(data.length-1));
+  const y=v=>padT+(H-padT-padB)*(1-v/niceMax);
+  const pts=data.map((d,i)=>[x(i),y(d.tot)]);
+  const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=path+` L ${x(data.length-1).toFixed(1)} ${(H-padB)} L ${padL} ${(H-padB)} Z`;
+  let grid='',ylab='';
+  for(let g=0;g<=4;g++){const val=niceMax*g/4;const yy=y(val);
+    grid+=`<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="var(--line)" stroke-dasharray="3 3"/>`;
+    ylab+=`<text x="${padL-6}" y="${yy+3}" text-anchor="end" font-size="9" fill="var(--muted)">${Math.round(val)}</text>`;}
+  const dots=pts.map((p,i)=>`<g>
+     <circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="#fff" stroke="var(--blue)" stroke-width="2.5"
+       onmousemove="moveTip(event)" onmouseleave="hideTip()"
+       onmouseenter="showTip(event,'<b>${MESES[+data[i].ym.split('-')[1]-1]}/${data[i].ym.split('-')[0]}</b><br>${fmtN(data[i].tot)} inspeções')"/>
+     <text x="${p[0]}" y="${p[1]-10}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--ink)">${data[i].tot}</text>
+   </g>`).join('');
+  const xlab=data.map((d,i)=>{const[yy,mm]=d.ym.split('-');
+    return `<text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="10" fill="var(--muted)">${MESES[+mm-1]}/${yy.slice(2)}</text>`;}).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:210px">
+    <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--blue)" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="var(--blue)" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${ylab}
+    <path d="${area}" fill="url(#lg)"/>
+    <path d="${path}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/>
+    ${dots}${xlab}</svg>`;
+}
+
+function failCounts(rows){
+  const c={};
+  rows.forEach(r=>r.fails.forEach(f=>c[f]=(c[f]||0)+1));
+  return Object.entries(c).sort((a,b)=>b[1]-a[1]);
+}
+
+function renderHBars(elId,counts,soft){
+  const el=document.getElementById(elId);
+  if(!counts.length){el.innerHTML='<div class="empty">Nenhuma falha registrada no recorte. 🎉</div>';return;}
+  const top=counts.slice(0,7);
+  const max=top[0][1];
+  el.innerHTML=top.map(([name,n])=>`
+    <div class="hrow">
+      <div class="hl">${name}</div>
+      <div class="htrack"><div class="hfill ${soft?'soft':''}" style="width:${Math.max(4,n/max*100)}%"></div></div>
+      <div class="hv">${fmtN(n)}</div>
+    </div>`).join('');
+}
+
+function renderFails(){
+  const days=lastNDays(7);
+  const rows7=current.filter(r=>days.includes(r.date));
+  renderHBars('chartFail7',failCounts(rows7),false);
+  renderHBars('chartFailAll',failCounts(current),true);
+}
+
+function renderTable(){
+  const rows=[...current].sort((a,b)=>b.datetime.localeCompare(a.datetime)).slice(0,30);
+  document.getElementById('pillCount').textContent=fmtN(current.length)+' no filtro';
+  const tb=document.getElementById('tblBody');
+  if(!rows.length){tb.innerHTML='<tr><td colspan="6" class="empty">Nenhum registro encontrado.</td></tr>';return;}
+  tb.innerHTML=rows.map(r=>{
+    const cls=r.status==='NÃO INFORMADO'?'NI':r.status;
+    const fails=r.fails.length?r.fails.map(f=>`<span class="fail-chip">${f}</span>`).join(''):'<span style="color:var(--muted)">—</span>';
+    const dt=r.datetime.slice(8,10)+'/'+r.datetime.slice(5,7)+' '+r.datetime.slice(11);
+    return `<tr><td>${dt}</td><td>${r.order}</td><td>${r.code||'—'}</td><td>${r.inspector||'—'}</td>
+      <td><span class="badge ${cls}">${r.status}</span></td><td>${fails}</td></tr>`;
+  }).join('');
+}
+
+// ---- glossário de NC ----
+const NC_INFO=[
+ ['Preenchimento do checklist','Verifica se todos os campos do checklist da inspeção foram preenchidos e aprovados pelos responsáveis. É a falha mais comum e tem natureza documental/processo, não de produto.'],
+ ['Testes de liner/impressão','Confirma se os testes de liner, de impressão e demais ensaios estão anexados à Ordem de Produção e atendem às especificações exigidas.'],
+ ['Tape test (desplacamento de tinta)','Teste de aderência da tinta usando fita adesiva. Reprova quando há desplacamento — ou seja, quando a tinta se solta do material.'],
+ ['Etiquetas de identificação','Confere se a etiqueta de identificação do produto contém todas as informações corretas e completas solicitadas pelo cliente.'],
+ ['Matéria-prima / certificações','Checa se a matéria-prima utilizada está conforme a estrutura do produto e possui as certificações exigidas pelo cliente.'],
+ ['Produto final conforme amostra','Compara o produto final com a amostra ou padrão de cor aprovado, garantindo o atendimento às especificações do cliente.'],
+ ['Dimensional do produto','Confere as medidas físicas do produto (etiqueta, manual ou outros) em relação ao layout aprovado.'],
+ ['Leitura QR / código de barras','Valida se o QR Code e/ou código de barras são lidos corretamente — legibilidade e veracidade dos dados.'],
+ ['Impressão conforme arte','Avalia se a impressão corresponde fielmente à arte/layout aprovado: cores, textos e elementos gráficos.'],
+ ['Diâmetro externo da bobina','Verifica se o diâmetro externo da bobina acabada está dentro do valor especificado na ficha técnica.'],
+ ['Diâmetro do tubete','Verifica se o diâmetro do tubete (núcleo da bobina) está conforme a ficha técnica do produto.'],
+ ['Versão/Revisão do item','Garante que a versão/revisão do item impresso é a vigente, conforme a especificação do produto (layout e descrição).'],
+];
+function renderNC(){
+  const counts=failCounts(RAW).reduce((o,[k,v])=>{o[k]=v;return o;},{});
+  document.getElementById('ncGrid').innerHTML=NC_INFO.map((it,i)=>{
+    const c=counts[it[0]]||0;
+    return `<div class="nc-item">
+      <h4><span class="nb">${i+1}</span>${it[0]}</h4>
+      <p>${it[1]}</p>
+      <div class="cnt">${fmtN(c)} ocorrência(s) no histórico</div>
+    </div>`;}).join('');
+}
+render();
+renderNC();
+</script>
+</body>
+</html>

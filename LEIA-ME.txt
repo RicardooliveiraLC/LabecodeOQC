@@ -1,0 +1,43 @@
+============================================================
+ DASHBOARD OQC - LABEL CODE  |  Automacao
+============================================================
+
+ARQUIVOS DESTA PASTA
+--------------------
+- dashboard.html ............ O painel pronto. Abra com duplo-clique
+                              (abre no navegador, funciona offline).
+- gerar_dashboard.py ........ Gerador: le a planilha e refaz o dashboard.
+- template.html ............. Modelo visual usado pelo gerador.
+                              (NAO apagar - sem ele o gerador nao funciona)
+- Atualizar Dashboard OQC.bat  Atualiza o painel na hora e o abre
+                              (duplo-clique quando quiser atualizar).
+- *.lnk (atalho) ............ Aponta para a planilha de origem. O gerador
+                              usa este atalho para achar a planilha, entao
+                              se a planilha mudar de lugar, basta refazer
+                              o atalho aqui.
+
+COMO ATUALIZAR MANUALMENTE
+--------------------------
+Duplo-clique em "Atualizar Dashboard OQC.bat".
+
+ATUALIZACAO AUTOMATICA (ja configurada)
+---------------------------------------
+Existe uma Tarefa Agendada do Windows chamada:
+   "OQC - Atualizar Dashboard"
+Ela roda TODO DIA as 07:00 e regenera o dashboard.html em segundo
+plano (sem abrir janela). Requer o usuario logado no Windows.
+
+Para mudar o horario / ver / desativar:
+  1. Abra o "Agendador de Tarefas" (Task Scheduler) do Windows.
+  2. Biblioteca do Agendador de Tarefas -> procure
+     "OQC - Atualizar Dashboard".
+  3. Botao direito -> Propriedades (aba "Disparadores" muda o horario)
+     ou Desabilitar / Excluir.
+
+REQUISITOS
+----------
+- Python instalado (com a biblioteca openpyxl).
+  Se faltar:  pip install openpyxl
+- O atalho .lnk valido apontando para a planilha .xlsx.
+
+============================================================

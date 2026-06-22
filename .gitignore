@@ -1,0 +1,11 @@
+# pastas/arquivos locais que NAO devem ir para o GitHub
+.claude/
+*.lnk
+*.bak.html
+__pycache__/
+*.pyc
+*.tmp
+~$*
+# nunca versionar segredos
+github_token.txt
+*token*.txt
